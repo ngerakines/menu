@@ -1,35 +1,36 @@
 package main
 
 import (
-	_ "encoding/json"
+	"encoding/json"
 	"fmt"
 	"os"
 	_ "strings"
 	"github.com/jessevdk/go-flags"
+	"time"
 )
 
 type Cookbook struct {
-	location string
+	Location string
 }
 
 type Artifact struct {
-	id string
-	version string
-	location string
+	Id string
+	Version string
+	Location string
 }
 
 type Release struct {
-	time      uint32
-	cookbooks []Cookbook
-	artifacts []Artifact
+	Time      int
+	Cookbooks []Cookbook
+	Artifacts []Artifact
 }
 
 var opts struct {
 	Verbose []bool `short:"v" long:"verbose" description:"Show verbose debug information"`
-	ArtifactIds []string `short:"ai" description:"An artifact id"`
-	ArtifactVersions []string `short:"av" description:"An artifact version"`
-	ArtifactLocations []string `short:"al" description:"An artifact location"`
-	Cookbooks []string `short:"c" description:"A cookbook location"`
+	ArtifactIds []string `short:"i" long:"artifact-id" description:"An artifact id"`
+	ArtifactVersions []string `short:"v" long:"artifact-version" description:"An artifact version"`
+	ArtifactLocations []string `short:"l" long:"artifact-location" description:"An artifact location"`
+	Cookbooks []string `short:"c" long:"cookbook" description:"A cookbook location"`
 }
 
 func help() {
@@ -112,13 +113,13 @@ func main() {
 		handleHelp(args)
 		os.Exit(0)
 	}
-	help()
+	if args[0] == "create" {
+		handleCreate(args)
+		os.Exit(0)
+	}
 
 	/*
 	fmt.Printf("Verbosity: %v\n", opts.Verbose)
-	fmt.Printf("ArtifactIds: %v\n", opts.ArtifactIds)
-	fmt.Printf("ArtifactVersions: %v\n", opts.ArtifactVersions)
-	fmt.Printf("ArtifactLocations: %v\n", opts.ArtifactLocations)
 	fmt.Printf("Cookbooks: %v\n", opts.Cookbooks)
 	fmt.Printf("Command: %s\n", args[0])
 	fmt.Printf("Remaining args: %s\n", strings.Join(args[1:], " "))
@@ -152,7 +153,51 @@ func handleHelp(args []string) {
 }
 
 func handleCreate(args []string) {
-	helpCreate()
+	// [todo] Validate the options.
+	if len(opts.ArtifactIds) != len(opts.ArtifactVersions) {
+		fmt.Println("An equal number of artifact ids, versions and locations are required.")
+		helpCreate()
+		os.Exit(1)
+	}
+	if len(opts.ArtifactVersions) != len(opts.ArtifactLocations) {
+		fmt.Println("An equal number of artifact ids, versions and locations are required.")
+		helpCreate()
+		os.Exit(1)
+	}
+
+	artifacts := make([]Artifact, len(opts.ArtifactVersions))
+	cookbooks := make([]Cookbook, len(opts.Cookbooks))
+
+	for i := 0; i < len(opts.ArtifactIds); i++ {
+		artifact := Artifact{
+			Id: opts.ArtifactIds[i],
+			Version: opts.ArtifactVersions[i],
+			Location: opts.ArtifactLocations[i],
+		}
+		artifacts[i] = artifact
+	}
+
+	for i := 0; i < len(opts.Cookbooks); i++ {
+		cookbook := Cookbook{
+			Location: opts.Cookbooks[i],
+		}
+		cookbooks[i] = cookbook
+	}
+
+	createdAt := time.Now().Unix()
+
+	release := Release{
+		Time: int(createdAt),
+		Artifacts: artifacts,
+		Cookbooks: cookbooks,
+	}
+
+	b, err := json.Marshal(release)
+	if err != nil {
+		fmt.Println("error:", err)
+		os.Exit(1)
+	}
+	fmt.Println(string(b))
 }
 
 func handleShow(args []string) {
