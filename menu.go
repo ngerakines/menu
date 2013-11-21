@@ -7,6 +7,8 @@ import (
 	_ "strings"
 	"github.com/jessevdk/go-flags"
 	"time"
+	"path/filepath"
+	"io/ioutil"
 )
 
 type Cookbook struct {
@@ -198,6 +200,45 @@ func handleCreate(args []string) {
 		os.Exit(1)
 	}
 	fmt.Println(string(b))
+
+	path := getCreatePath(release, args)
+	dir, fileName := filepath.Split(path)
+	fmt.Println("Writing file ", fileName, " to directory ", dir)
+
+	dirExists := false
+	dirExists, err = exists(dir); if err != nil {
+		panic(err)
+	}
+	if dirExists == false {
+		err = os.MkdirAll(dir, os.ModeDir); if err != nil {
+			panic(err)
+		}
+	}
+	err = ioutil.WriteFile(path, b, 0644); if err != nil {
+		panic(err)
+	}
+}
+
+func exists(path string) (bool, error) {
+	_, err := os.Stat(path)
+	if err == nil {
+		return true, nil
+	}
+	if os.IsNotExist(err) {
+		return false, nil
+	}
+	return false, err
+}
+
+func getCreatePath(release Release, args []string) string {
+	if len(args) > 1 {
+		return args[1]
+	}
+	cwd, err := os.Getwd(); if err != nil {
+		panic(err)
+	}
+	fileName := fmt.Sprintf("%v.menu", release.Time)
+	return filepath.Join(cwd, fileName)
 }
 
 func handleShow(args []string) {
