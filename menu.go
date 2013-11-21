@@ -199,11 +199,16 @@ func handleCreate(args []string) {
 		fmt.Println("error:", err)
 		os.Exit(1)
 	}
-	fmt.Println(string(b))
+	if len(opts.Verbose) > 0 {
+		fmt.Println(string(b))
+	}
 
 	path := getCreatePath(release, args)
 	dir, fileName := filepath.Split(path)
-	fmt.Println("Writing file ", fileName, " to directory ", dir)
+
+	if len(opts.Verbose) > 0 {
+		fmt.Println("Writing file ", fileName, " to directory ", dir)
+	}
 
 	dirExists := false
 	dirExists, err = exists(dir); if err != nil {
