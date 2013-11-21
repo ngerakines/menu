@@ -3,12 +3,11 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"os"
-	_ "strings"
 	"github.com/jessevdk/go-flags"
-	"time"
-	"path/filepath"
 	"io/ioutil"
+	"os"
+	"path/filepath"
+	"time"
 )
 
 type Cookbook struct {
@@ -16,8 +15,8 @@ type Cookbook struct {
 }
 
 type Artifact struct {
-	Id string
-	Version string
+	Id       string
+	Version  string
 	Location string
 }
 
@@ -28,11 +27,11 @@ type Release struct {
 }
 
 var opts struct {
-	Verbose []bool `short:"v" long:"verbose" description:"Show verbose debug information"`
-	ArtifactIds []string `short:"i" long:"artifact-id" description:"An artifact id"`
-	ArtifactVersions []string `short:"v" long:"artifact-version" description:"An artifact version"`
+	Verbose           []bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
+	ArtifactIds       []string `short:"i" long:"artifact-id" description:"An artifact id"`
+	ArtifactVersions  []string `short:"v" long:"artifact-version" description:"An artifact version"`
 	ArtifactLocations []string `short:"l" long:"artifact-location" description:"An artifact location"`
-	Cookbooks []string `short:"c" long:"cookbook" description:"A cookbook location"`
+	Cookbooks         []string `short:"c" long:"cookbook" description:"A cookbook location"`
 }
 
 func help() {
@@ -119,13 +118,6 @@ func main() {
 		handleCreate(args)
 		os.Exit(0)
 	}
-
-	/*
-	fmt.Printf("Verbosity: %v\n", opts.Verbose)
-	fmt.Printf("Cookbooks: %v\n", opts.Cookbooks)
-	fmt.Printf("Command: %s\n", args[0])
-	fmt.Printf("Remaining args: %s\n", strings.Join(args[1:], " "))
-	*/
 }
 
 func handleHelp(args []string) {
@@ -155,7 +147,6 @@ func handleHelp(args []string) {
 }
 
 func handleCreate(args []string) {
-	// [todo] Validate the options.
 	if len(opts.ArtifactIds) != len(opts.ArtifactVersions) {
 		fmt.Println("An equal number of artifact ids, versions and locations are required.")
 		helpCreate()
@@ -172,8 +163,8 @@ func handleCreate(args []string) {
 
 	for i := 0; i < len(opts.ArtifactIds); i++ {
 		artifact := Artifact{
-			Id: opts.ArtifactIds[i],
-			Version: opts.ArtifactVersions[i],
+			Id:       opts.ArtifactIds[i],
+			Version:  opts.ArtifactVersions[i],
 			Location: opts.ArtifactLocations[i],
 		}
 		artifacts[i] = artifact
@@ -189,7 +180,7 @@ func handleCreate(args []string) {
 	createdAt := time.Now().Unix()
 
 	release := Release{
-		Time: int(createdAt),
+		Time:      int(createdAt),
 		Artifacts: artifacts,
 		Cookbooks: cookbooks,
 	}
@@ -211,15 +202,18 @@ func handleCreate(args []string) {
 	}
 
 	dirExists := false
-	dirExists, err = exists(dir); if err != nil {
+	dirExists, err = exists(dir)
+	if err != nil {
 		panic(err)
 	}
 	if dirExists == false {
-		err = os.MkdirAll(dir, os.ModeDir); if err != nil {
+		err = os.MkdirAll(dir, os.ModeDir)
+		if err != nil {
 			panic(err)
 		}
 	}
-	err = ioutil.WriteFile(path, b, 0644); if err != nil {
+	err = ioutil.WriteFile(path, b, 0644)
+	if err != nil {
 		panic(err)
 	}
 }
@@ -239,7 +233,8 @@ func getCreatePath(release Release, args []string) string {
 	if len(args) > 1 {
 		return args[1]
 	}
-	cwd, err := os.Getwd(); if err != nil {
+	cwd, err := os.Getwd()
+	if err != nil {
 		panic(err)
 	}
 	fileName := fmt.Sprintf("%v.menu", release.Time)
