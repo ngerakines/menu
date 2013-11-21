@@ -57,3 +57,9 @@ To list all menu items for an artifact:
 
     $ menu search --artifact-id=www-resources s3://company-releases/
     s3://company-releases/1385056233.menu
+
+# License
+
+Copyright (c) 2013 Nick Gerakines <nick@gerakines.net> and Chris Antenesse <chris@antenesse.net>
+
+This project and its contents are open source under the MIT license.
