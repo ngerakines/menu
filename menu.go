@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"time"
+	"strings"
 )
 
 type Cookbook struct {
@@ -61,7 +62,11 @@ Commands:
 }
 
 func helpCreate() {
-	fmt.Printf(`Usage: menu create
+	fmt.Printf(`Usage: menu create <options> [destination]
+
+The create command can be used to create new menu items. A menu item
+consists of one or more artifact id, version and location tripples and
+one or more cookbooks.
 
 Options:
 	-ai,--artifact-id
@@ -154,13 +159,13 @@ func handleCreate(args []string) {
 		os.Exit(1)
 	}
 	if len(opts.ArtifactIds) != len(opts.ArtifactVersions) {
-		fmt.Println("An equal number of artifact ids, versions and locations are required.")
+		fmt.Println("Error: An equal number of artifact ids, versions and locations are required.")
 		fmt.Println()
 		helpCreate()
 		os.Exit(1)
 	}
 	if len(opts.ArtifactVersions) != len(opts.ArtifactLocations) {
-		fmt.Println("An equal number of artifact ids, versions and locations are required.")
+		fmt.Println("Error: An equal number of artifact ids, versions and locations are required.")
 		fmt.Println()
 		helpCreate()
 		os.Exit(1)
@@ -239,7 +244,13 @@ func exists(path string) (bool, error) {
 
 func getCreatePath(release Release, args []string) string {
 	if len(args) > 1 {
-		return args[1]
+		if strings.HasPrefix(args[1], "file:///") {
+			return args[1][9:]
+		}
+		if strings.HasPrefix(args[1], "file://localhost/") {
+			return args[1][18:]
+		}
+		panic("Error: Only file URIs are supported at this time.")
 	}
 	cwd, err := os.Getwd()
 	if err != nil {
