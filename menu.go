@@ -147,13 +147,21 @@ func handleHelp(args []string) {
 }
 
 func handleCreate(args []string) {
+	if len(opts.ArtifactIds) == 0 {
+		fmt.Println("Error: One or more artifacts must be provided.")
+		fmt.Println()
+		helpCreate()
+		os.Exit(1)
+	}
 	if len(opts.ArtifactIds) != len(opts.ArtifactVersions) {
 		fmt.Println("An equal number of artifact ids, versions and locations are required.")
+		fmt.Println()
 		helpCreate()
 		os.Exit(1)
 	}
 	if len(opts.ArtifactVersions) != len(opts.ArtifactLocations) {
 		fmt.Println("An equal number of artifact ids, versions and locations are required.")
+		fmt.Println()
 		helpCreate()
 		os.Exit(1)
 	}
@@ -187,7 +195,7 @@ func handleCreate(args []string) {
 
 	b, err := json.Marshal(release)
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println("Error: ", err)
 		os.Exit(1)
 	}
 	if len(opts.Verbose) > 0 {
