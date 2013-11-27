@@ -47,11 +47,28 @@ func readFile(path string) (*Release, error) {
 }
 
 func scrubPath(path string) string {
-	if strings.HasPrefix(path, "file:///") {
+	if strings.HasPrefix(path, "file://") {
 		return path[8:]
 	}
-	if strings.HasPrefix(path, "file://localhost/") {
+	if strings.HasPrefix(path, "file://localhost") {
 		return path[17:]
 	}
 	return path
+}
+
+func discoverPaths(path string, paths []string) []string {
+	visit := func(filePath string, f os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
+		if strings.HasSuffix(filePath, ".menu") {
+			paths = appendIfMissing(paths, filePath)
+		}
+		return nil
+	}
+	err := filepath.Walk(path, visit)
+	if err != nil {
+		fmt.Printf("filepath.Walk() returned %v\n", err)
+	}
+	return paths
 }

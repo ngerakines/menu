@@ -37,6 +37,8 @@ func main() {
 		handleArtifacts(args)
 	case command == "cookbooks":
 		handleCookbooks(args)
+	case command == "list":
+		handleList(args)
 	default:
 		usageHelp()
 	}
@@ -194,7 +196,34 @@ func handleDisplay(args []string, filter DisplayFilter, displayFunc help) {
 }
 
 func handleList(args []string) {
-	helpList()
+	rules := make([]Rule, 1)
+	rules[0] = Rule{len(args) == 1, "Error: One or more paths must be provided."}
+
+	for _, rule := range rules {
+		if rule.validated {
+			fail(rule.message, helpList)
+		}
+	}
+
+	paths := make([]string, 0)
+
+	for index, path := range unique(args) {
+		if index > 0 {
+			uriType := getPathType(path)
+			if uriType == File {
+				filePath := scrubPath(path)
+				paths = discoverPaths(filePath, paths)
+			}
+		}
+	}
+	for _, path := range paths {
+		release, err := readFile(path)
+		if err != nil {
+			fail(err.Error(), helpList)
+		}
+		release.Display()
+	}
+	fmt.Println(paths)
 }
 
 func getPathType(path string) UriType {
