@@ -5,6 +5,8 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
+	"encoding/json"
 )
 
 func writeFile(path string, b []byte) {
@@ -31,5 +33,24 @@ func writeFile(path string, b []byte) {
 }
 
 func readFile(path string) (*Release, error) {
-	return nil, nil
+	scrubbedPath := scrubPath(path)
+	b, err := ioutil.ReadFile(scrubbedPath); if err != nil {
+		return nil, err
+	}
+	var release Release
+	err = json.Unmarshal(b, &release)
+	if err != nil {
+		return nil, err
+	}
+	return &release, nil
+}
+
+func scrubPath(path string) string {
+	if strings.HasPrefix(path, "file:///") {
+		return path[8:]
+	}
+	if strings.HasPrefix(path, "file://localhost/") {
+		return path[17:]
+	}
+	return path
 }

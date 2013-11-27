@@ -29,8 +29,8 @@ type UriType int
 
 const (
 	Unknown UriType = 0
-	File UriType = 1
-	S3 UriType = 2
+	File    UriType = 1
+	S3      UriType = 2
 )
 
 func (release *Release) Display() {
@@ -39,7 +39,8 @@ func (release *Release) Display() {
 	for _, artifact := range release.Artifacts {
 		fmt.Println("\t", artifact.Id, "\t", artifact.Version, "\t", artifact.Location)
 	}
+	fmt.Println("cookbooks:")
 	for _, cookbook := range release.Cookbooks {
-		fmt.Println("\t", cookbook)
+		fmt.Println("\t", cookbook.Location)
 	}
 }

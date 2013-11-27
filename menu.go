@@ -27,28 +27,38 @@ func main() {
 	}
 
 	switch command := getCommand(args, 1, "usage"); {
-		case command == "help": handleHelp(args)
-		case command == "create": handleCreate(args)
-		case command == "show": handleShow(args)
-		default: usageHelp()
+	case command == "help":
+		handleHelp(args)
+	case command == "create":
+		handleCreate(args)
+	case command == "show":
+		handleShow(args)
+	default:
+		usageHelp()
 	}
 }
 
 func getCommand(args []string, position int, defaultCommand string) string {
 	if len(args) >= position {
-		return args[position - 1]
+		return args[position-1]
 	}
 	return defaultCommand
 }
 
 func handleHelp(args []string) {
 	switch command := getCommand(args, 2, "help"); {
-		case command == "create": helpCreate()
-		case command == "show": helpShow()
-		case command == "cookbooks": helpCookbooks()
-		case command == "artifacts": helpArtifacts()
-		case command == "list": helpList()
-		default: helpHelp()
+	case command == "create":
+		helpCreate()
+	case command == "show":
+		helpShow()
+	case command == "cookbooks":
+		helpCookbooks()
+	case command == "artifacts":
+		helpArtifacts()
+	case command == "list":
+		helpList()
+	default:
+		helpHelp()
 	}
 }
 
@@ -149,7 +159,8 @@ func handleShow(args []string) {
 			uriType := getPathType(path)
 			fmt.Println("path: ", path, " type: ", uriType)
 			if uriType == File {
-				release, err := readFile(path); if err != nil {
+				release, err := readFile(path)
+				if err != nil {
 					fail(err.Error(), helpShow)
 				}
 				release.Display()
