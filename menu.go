@@ -223,7 +223,6 @@ func handleList(args []string) {
 		}
 		release.Display()
 	}
-	fmt.Println(paths)
 }
 
 func getPathType(path string) UriType {
