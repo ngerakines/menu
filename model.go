@@ -44,3 +44,15 @@ func (release *Release) Display() {
 		fmt.Println("\t", cookbook.Location)
 	}
 }
+
+func (release *Release) DisplayArtifacts() {
+	for _, artifact := range release.Artifacts {
+		fmt.Println(artifact.Id, "\t", artifact.Version, "\t", artifact.Location)
+	}
+}
+
+func (release *Release) DisplayCookbooks() {
+	for _, cookbook := range release.Cookbooks {
+		fmt.Println(cookbook.Location)
+	}
+}

@@ -33,6 +33,10 @@ func main() {
 		handleCreate(args)
 	case command == "show":
 		handleShow(args)
+	case command == "artifacts":
+		handleArtifacts(args)
+	case command == "cookbooks":
+		handleCookbooks(args)
 	default:
 		usageHelp()
 	}
@@ -144,37 +148,49 @@ func getCreatePath(release Release, args []string) (string, error) {
 	return filepath.Join(cwd, fileName), nil
 }
 
+type DisplayFilter int
+
 func handleShow(args []string) {
+	handleDisplay(args, 0, helpShow)
+}
+
+func handleArtifacts(args []string) {
+	handleDisplay(args, 1, helpArtifacts)
+}
+
+func handleCookbooks(args []string) {
+	handleDisplay(args, 2, helpCookbooks)
+}
+
+func handleDisplay(args []string, filter DisplayFilter, displayFunc help) {
 	rules := make([]Rule, 1)
 	rules[0] = Rule{len(args) == 1, "Error: One or more paths must be provided."}
 
 	for _, rule := range rules {
 		if rule.validated {
-			fail(rule.message, helpShow)
+			fail(rule.message, displayFunc)
 		}
 	}
 
-	for index, path := range args {
+	for index, path := range unique(args) {
 		if index > 0 {
 			uriType := getPathType(path)
-			fmt.Println("path: ", path, " type: ", uriType)
 			if uriType == File {
 				release, err := readFile(path)
 				if err != nil {
-					fail(err.Error(), helpShow)
+					fail(err.Error(), displayFunc)
 				}
-				release.Display()
+				switch filter {
+				case 0:
+					release.Display()
+				case 1:
+					release.DisplayArtifacts()
+				case 2:
+					release.DisplayCookbooks()
+				}
 			}
 		}
 	}
-}
-
-func handleArtifacts(args []string) {
-	helpArtifacts()
-}
-
-func handleCookbooks(args []string) {
-	helpCookbooks()
 }
 
 func handleList(args []string) {
@@ -189,4 +205,21 @@ func getPathType(path string) UriType {
 		return File
 	}
 	return Unknown
+}
+
+func unique(slice []string) []string {
+	values := make([]string, 0)
+	for _, element := range slice {
+		values = appendIfMissing(values, element)
+	}
+	return values
+}
+
+func appendIfMissing(slice []string, value string) []string {
+	for _, ele := range slice {
+		if ele == value {
+			return slice
+		}
+	}
+	return append(slice, value)
 }

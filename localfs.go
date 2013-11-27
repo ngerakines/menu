@@ -1,12 +1,12 @@
 package main
 
 import (
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"os"
 	"path/filepath"
 	"strings"
-	"encoding/json"
 )
 
 func writeFile(path string, b []byte) {
@@ -34,7 +34,8 @@ func writeFile(path string, b []byte) {
 
 func readFile(path string) (*Release, error) {
 	scrubbedPath := scrubPath(path)
-	b, err := ioutil.ReadFile(scrubbedPath); if err != nil {
+	b, err := ioutil.ReadFile(scrubbedPath)
+	if err != nil {
 		return nil, err
 	}
 	var release Release
