@@ -205,13 +205,11 @@ func handleList(args []string) {
 
 	paths := make([]string, 0)
 
-	for index, path := range unique(args) {
-		if index > 0 {
-			uriType := getPathType(path)
-			if uriType == File {
-				filePath := scrubPath(path)
-				paths = discoverPaths(filePath, paths)
-			}
+	for _, path := range unique(args[1:]) {
+		uriType := getPathType(path)
+		if uriType == File {
+			filePath := scrubPath(path)
+			paths = discoverPaths(filePath, paths)
 		}
 	}
 	for _, path := range paths {
@@ -273,13 +271,4 @@ func appendIfMissing(slice []string, value string) []string {
 		}
 	}
 	return append(slice, value)
-}
-
-func Contains(list []interface{}, elem interface{}) bool {
-	for _, t := range list {
-		if t == elem {
-			return true
-		}
-	}
-	return false
 }
