@@ -232,17 +232,17 @@ func match(release *Release) bool {
 	}
 	if len(opts.ArtifactIds) > 0 {
 		if release.HasArtifactIds(opts.ArtifactIds) {
-			return true;
+			return true
 		}
 	}
 	if len(opts.ArtifactVersions) > 0 {
 		if release.HasArtifactVersions(opts.ArtifactVersions) {
-			return true;
+			return true
 		}
 	}
 	if len(opts.ArtifactLocations) > 0 {
 		if release.HasArtifactLocations(opts.ArtifactLocations) {
-			return true;
+			return true
 		}
 	}
 	return false
