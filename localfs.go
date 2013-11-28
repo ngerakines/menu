@@ -47,11 +47,11 @@ func readFile(path string) (*Release, error) {
 }
 
 func scrubPath(path string) string {
-	if strings.HasPrefix(path, "file://") {
-		return path[8:]
+	if strings.HasPrefix(path, "file:///") {
+		return path[len("file:///")-1:]
 	}
-	if strings.HasPrefix(path, "file://localhost") {
-		return path[17:]
+	if strings.HasPrefix(path, "file://localhost/") {
+		return path[len("file://localhost/")-1:]
 	}
 	return path
 }

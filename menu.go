@@ -134,11 +134,9 @@ func exists(path string) (bool, error) {
 
 func getCreatePath(release Release, args []string) (string, error) {
 	if len(args) > 1 {
-		if strings.HasPrefix(args[1], "file:///") {
-			return args[1][9:], nil
-		}
-		if strings.HasPrefix(args[1], "file://localhost/") {
-			return args[1][18:], nil
+		uriType := getPathType(args[1])
+		if uriType == File {
+			return scrubPath(args[1]), nil
 		}
 		return "", errors.New("Error: Only file URIs are supported at this time.")
 	}
@@ -221,8 +219,33 @@ func handleList(args []string) {
 		if err != nil {
 			fail(err.Error(), helpList)
 		}
-		release.Display()
+		if match(release) {
+			release.Display()
+		}
 	}
+}
+
+func match(release *Release) bool {
+	matches := len(opts.ArtifactVersions)
+	if matches == 0 {
+		return true
+	}
+	if len(opts.ArtifactIds) > 0 {
+		if release.HasArtifactIds(opts.ArtifactIds) {
+			return true;
+		}
+	}
+	if len(opts.ArtifactVersions) > 0 {
+		if release.HasArtifactVersions(opts.ArtifactVersions) {
+			return true;
+		}
+	}
+	if len(opts.ArtifactLocations) > 0 {
+		if release.HasArtifactLocations(opts.ArtifactLocations) {
+			return true;
+		}
+	}
+	return false
 }
 
 func getPathType(path string) UriType {
@@ -250,4 +273,13 @@ func appendIfMissing(slice []string, value string) []string {
 		}
 	}
 	return append(slice, value)
+}
+
+func Contains(list []interface{}, elem interface{}) bool {
+	for _, t := range list {
+		if t == elem {
+			return true
+		}
+	}
+	return false
 }
