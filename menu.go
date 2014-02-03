@@ -39,6 +39,8 @@ func main() {
 		handleCookbooks(args)
 	case command == "list":
 		handleList(args)
+	case command == "local-deploy":
+		handleLocalDeploy(args)
 	default:
 		usageHelp()
 	}
@@ -63,6 +65,8 @@ func handleHelp(args []string) {
 		helpArtifacts()
 	case command == "list":
 		helpList()
+	case command == "local-deploy":
+		helpLocalDeploy();
 	default:
 		helpHelp()
 	}
@@ -219,6 +223,17 @@ func handleList(args []string) {
 		}
 		if match(release) {
 			release.Display()
+		}
+	}
+}
+
+func handleLocalDeploy(args []string) {
+	rules := make([]Rule, 1)
+	rules[0] = Rule{len(args) == 1, "Error: One or more paths must be provided."}
+
+	for _, rule := range rules {
+		if rule.validated {
+			fail(rule.message, helpLocalDeploy)
 		}
 	}
 }

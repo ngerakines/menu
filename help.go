@@ -17,6 +17,7 @@ Commands:
 	artifacts
 	cookbooks
 	list
+	local-deploy
 `)
 }
 
@@ -71,6 +72,11 @@ Options:
 	-av,--artifact-version
 	-al,--artifact-location
 	-c,--cookbook
+`)
+}
+
+func helpLocalDeploy() {
+	fmt.Printf(`Usage: menu local-deploy <path>
 `)
 }
 
