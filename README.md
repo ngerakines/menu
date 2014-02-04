@@ -72,7 +72,6 @@ To create a local-deploy script for a menu item:
     # Deploy 'menu-webapp-tomcat' (tomcat)
     curl --upload-file 35a19d45d918a4866a55437e323fa310f1d33650 "http://admin:password@localhost/manager/deploy?path=/&update=true"
 
-
 # License
 
 Copyright (c) 2013,2014 Nick Gerakines <nick@gerakines.net>, Chris Antenesse <chris@antenesse.net>

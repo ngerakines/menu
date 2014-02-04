@@ -66,7 +66,7 @@ func handleHelp(args []string) {
 	case command == "list":
 		helpList()
 	case command == "local-deploy":
-		helpLocalDeploy();
+		helpLocalDeploy()
 	default:
 		helpHelp()
 	}
@@ -236,6 +236,25 @@ func handleLocalDeploy(args []string) {
 			fail(rule.message, helpLocalDeploy)
 		}
 	}
+
+	paths := make([]string, 0)
+
+	for _, path := range unique(args[1:]) {
+		uriType := getPathType(path)
+		if uriType == File {
+			filePath := scrubPath(path)
+			paths = discoverPaths(filePath, paths)
+		}
+	}
+	for _, path := range paths {
+		release, err := readFile(path)
+		if err != nil {
+			fail(err.Error(), helpList)
+		}
+		if match(release) {
+			release.DisplayLocalDeploy()
+		}
+	}
 }
 
 func match(release *Release) bool {
@@ -267,6 +286,12 @@ func getPathType(path string) UriType {
 	}
 	if strings.HasPrefix(path, "file://localhost/") {
 		return File
+	}
+	if strings.HasPrefix(path, "http://") {
+		return HTTP
+	}
+	if strings.HasPrefix(path, "https://") {
+		return HTTP
 	}
 	return Unknown
 }
