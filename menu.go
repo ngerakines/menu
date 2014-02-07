@@ -14,7 +14,7 @@ import (
 var opts struct {
 	Verbose           []bool   `short:"v" long:"verbose" description:"Show verbose debug information"`
 	ArtifactIds       []string `short:"i" long:"artifact-id" description:"An artifact id"`
-	ArtifactVersions  []string `short:"v" long:"artifact-version" description:"An artifact version"`
+	ArtifactVersions  []string `short:"a" long:"artifact-version" description:"An artifact version"`
 	ArtifactLocations []string `short:"l" long:"artifact-location" description:"An artifact location"`
 	Cookbooks         []string `short:"c" long:"cookbook" description:"A cookbook location"`
 }
