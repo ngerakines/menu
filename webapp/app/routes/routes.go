@@ -16,6 +16,30 @@ func (_ tApp) Index(
 }
 
 
+type tCreate struct {}
+var Create tCreate
+
+
+func (_ tCreate) Index(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("Create.Index", args).Url
+}
+
+
+type tDisplay struct {}
+var Display tDisplay
+
+
+func (_ tDisplay) Index(
+		) string {
+	args := make(map[string]string)
+	
+	return revel.MainRouter.Reverse("Display.Index", args).Url
+}
+
+
 type tStatic struct {}
 var Static tStatic
 

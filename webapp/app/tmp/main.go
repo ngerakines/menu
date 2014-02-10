@@ -8,9 +8,9 @@ import (
 	controllers0 "github.com/robfig/revel/modules/static/app/controllers"
 	_ "github.com/robfig/revel/modules/testrunner/app"
 	controllers1 "github.com/robfig/revel/modules/testrunner/app/controllers"
-	_ "menu.webapp/app"
-	controllers "menu.webapp/app/controllers"
-	tests "menu.webapp/tests"
+	_ "menu/webapp/app"
+	controllers "menu/webapp/app/controllers"
+	tests "menu/webapp/tests"
 )
 
 var (
@@ -29,6 +29,34 @@ func main() {
 	revel.INFO.Println("Running revel server")
 	
 	revel.RegisterController((*controllers.App)(nil),
+		[]*revel.MethodType{
+			&revel.MethodType{
+				Name: "Index",
+				Args: []*revel.MethodArg{ 
+				},
+				RenderArgNames: map[int][]string{ 
+					10: []string{ 
+					},
+				},
+			},
+			
+		})
+	
+	revel.RegisterController((*controllers.Create)(nil),
+		[]*revel.MethodType{
+			&revel.MethodType{
+				Name: "Index",
+				Args: []*revel.MethodArg{ 
+				},
+				RenderArgNames: map[int][]string{ 
+					10: []string{ 
+					},
+				},
+			},
+			
+		})
+	
+	revel.RegisterController((*controllers.Display)(nil),
 		[]*revel.MethodType{
 			&revel.MethodType{
 				Name: "Index",

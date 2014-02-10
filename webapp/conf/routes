@@ -4,8 +4,8 @@
 
 module:testrunner
 
-GET 	/display								Create.Index
-PUT		/create   								Display.Index
+GET 	/display								Display.Index
+PUT		/create   								Create.Index
 
 # Ignore favicon requests
 GET     /favicon.ico                            404
