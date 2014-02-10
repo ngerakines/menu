@@ -29,7 +29,7 @@ Menu is minimalistic file format and command line utility to describe and intera
 }
 ```
 
-# Usage
+# Usage - CLI
 
 To create a new menu item:
 
@@ -71,6 +71,14 @@ To create a local-deploy script for a menu item:
     cp /var/artifacts/com/socklabs/menu-webapp/menu-webapp-1.0.0.war 35a19d45d918a4866a55437e323fa310f1d33650
     # Deploy 'menu-webapp-tomcat' (tomcat)
     curl --upload-file 35a19d45d918a4866a55437e323fa310f1d33650 "http://admin:password@localhost/manager/deploy?path=/&update=true"
+
+# Running the webapp for developer mode
+  
+  To run the webapp in developer mode:
+
+    $ revel run menu/webapp 
+
+# Running the webapp in Production
 
 # License
 
